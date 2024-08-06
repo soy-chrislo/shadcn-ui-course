@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { barrios } from "./data/barrios.js";
 import { comunas } from "./data/comunas.js";
 import { relacionesBarriosComunas } from "./data/relacionesBarriosComunas.js";
@@ -6,6 +7,7 @@ import { relacionesBarriosComunas } from "./data/relacionesBarriosComunas.js";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 const port = 3000;
 
 app.get("/barrios", (req, res) => {
