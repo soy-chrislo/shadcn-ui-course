@@ -10,12 +10,27 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 const port = 3000;
 
+// ! -> Aquí
 app.get("/barrios", (req, res) => {
-	return res.json(barrios);
+	const barriosConComunaId = barrios.map((barrio) => {
+		const relacion = relacionesBarriosComunas.find(
+			(rel) => rel.idBarrio === barrio.id,
+		);
+		const communeId = relacion ? relacion.idComuna : null;
+		return { ...barrio, communeId };
+	});
+	return res.json(barriosConComunaId);
 });
 
+// ! -> Aquí
 app.get("/comunas", (req, res) => {
-	return res.json(comunas);
+	const comunasConNeighbourhoodIds = comunas.map((comuna) => {
+		const neighbourhoodIds = relacionesBarriosComunas
+			.filter((rel) => rel.idComuna === comuna.id)
+			.map((rel) => rel.idBarrio);
+		return { ...comuna, neighbourhoodIds };
+	});
+	return res.json(comunasConNeighbourhoodIds);
 });
 
 app.get("/comunas/:id", (req, res) => {

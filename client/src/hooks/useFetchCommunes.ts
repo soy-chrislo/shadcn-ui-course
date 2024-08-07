@@ -3,12 +3,14 @@ import { z } from "zod";
 
 interface Commune {
 	id: number;
-	nombre: string;
+	name: string;
+	neighbourhoodIds: number[];
 }
 
 const communeSchema = z.object({
 	id: z.number(),
-	nombre: z.string(),
+	name: z.string(),
+	neighbourhoodIds: z.array(z.number()),
 });
 
 const communesSchema = z.array(communeSchema);

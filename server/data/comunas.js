@@ -1,22 +1,22 @@
 export const comunas = [
 	{
 		id: 1,
-		nombre: "Comuna 1",
+		name: "Comuna 1",
 	},
 	{
 		id: 2,
-		nombre: "Comuna 2",
+		name: "Comuna 2",
 	},
 	{
 		id: 3,
-		nombre: "Comuna 3",
+		name: "Comuna 3",
 	},
 	{
 		id: 4,
-		nombre: "Comuna 4",
+		name: "Comuna 4",
 	},
 	{
 		id: 5,
-		nombre: "Comuna 5",
+		name: "Comuna 5",
 	},
 ];

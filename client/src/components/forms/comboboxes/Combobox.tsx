@@ -18,51 +18,68 @@ import { cn } from "@/lib/utils";
 import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
 import { CommandEmpty } from "cmdk";
 import { Check, ChevronsUpDown } from "lucide-react";
-import type { UseFormReturn } from "react-hook-form";
+import { useEffect, useRef, useState } from "react";
+import type { Path, PathValue, UseFormReturn } from "react-hook-form";
 
-export function Combobox({
+interface FormData {
+	[key: string]: string | number;
+}
+
+export function Combobox<T extends FormData>({
 	form,
 	fieldName,
 	itemName,
 	items,
 	description,
+	onChange,
 }: {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	form: UseFormReturn<any>;
-	fieldName: string;
+	form: UseFormReturn<T>;
+	fieldName: Path<T>;
 	itemName: string;
-	items: { id: number; nombre: string }[];
+	items: { id: PathValue<T, Path<T>>; name: string }[];
 	description: string;
+	onChange?: (id: number) => void;
 }) {
+	const buttonRef = useRef<HTMLButtonElement>(null);
+	const [buttonWidth, setButtonWidth] = useState<number>(0);
+
+	useEffect(() => {
+		if (!buttonRef.current) return;
+		setButtonWidth(buttonRef.current.offsetWidth);
+	}, []);
+
 	return (
 		<FormField
 			control={form.control}
 			name={fieldName}
 			render={({ field }) => (
-				<FormItem>
-					<FormLabel>
+				<FormItem className="mt-3">
+					<FormLabel className="flex">
 						{`${itemName[0].toLocaleUpperCase()}${itemName.slice(1)}`}:
 					</FormLabel>
 					<Popover>
 						<PopoverTrigger asChild>
 							<FormControl>
 								<Button
+									ref={buttonRef}
 									variant="outline"
 									role="combobox"
 									className={cn(
-										"w-[200px] justify-between",
+										"w-full justify-between",
 										!field.value && "text-muted-foreground",
 									)}
 								>
 									{field.value
-										? items.find((commune) => commune.id === field.value)
-												?.nombre
+										? items.find((commune) => commune.id === field.value)?.name
 										: `Seleccione ${itemName}`}
 									<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 								</Button>
 							</FormControl>
 						</PopoverTrigger>
-						<PopoverContent>
+						<PopoverContent
+							className="p-0"
+							style={{ width: buttonWidth ?? 200 }}
+						>
 							<Command>
 								<CommandInput placeholder={`Buscar ${itemName}...`} />
 								<CommandList>
@@ -70,10 +87,11 @@ export function Combobox({
 									<CommandGroup>
 										{items.map((item) => (
 											<CommandItem
-												value={item.nombre}
+												value={item.name}
 												key={item.id}
 												onSelect={() => {
 													form.setValue(fieldName, item.id);
+													onChange?.(Number(item.id.valueOf()));
 												}}
 											>
 												<Check
@@ -84,7 +102,7 @@ export function Combobox({
 															: "opacity-0",
 													)}
 												/>
-												{item.nombre}
+												{item.name}
 											</CommandItem>
 										))}
 									</CommandGroup>

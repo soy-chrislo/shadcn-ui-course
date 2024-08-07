@@ -2,11 +2,11 @@ import { PropertyForm } from "./components/forms/PropertyForm/PropertyForm";
 
 function App() {
 	return (
-		<>
-			<div style={{ width: "400px" }}>
+		<div className="flex justify-center items-center h-screen">
+			<div className="w-72">
 				<PropertyForm />
 			</div>
-		</>
+		</div>
 	);
 }
 

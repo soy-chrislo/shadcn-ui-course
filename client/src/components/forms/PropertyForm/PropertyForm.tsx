@@ -11,15 +11,24 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFetchCommunes } from "@/hooks/useFetchCommunes";
-import { useFetchNeighbourhoods } from "@/hooks/useFetchNeighbourhoods";
+import {
+	type Neighbourhood,
+	useFetchNeighbourhoods,
+} from "@/hooks/useFetchNeighbourhoods";
 import { propertyFormSchema } from "./PropertyFormSchema";
 import { Combobox } from "../comboboxes/Combobox";
 
 export function PropertyForm() {
 	const { communes, fetchCommunes } = useFetchCommunes();
 	const { neighbourhoods, fetchNeighbourhoods } = useFetchNeighbourhoods();
+
+	const [filteredNeighbourhoods, setFilteredNeighbourhoods] = useState<
+		Neighbourhood[]
+	>([]);
+	const [communeId, setCommuneId] = useState<number>(0);
+	const [neighbourhoodId, setNeighbourhoodId] = useState<number>(0);
 
 	useEffect(() => {
 		fetchCommunes();
@@ -30,10 +39,27 @@ export function PropertyForm() {
 		resolver: zodResolver(propertyFormSchema),
 		defaultValues: {
 			name: "",
-			neighbourhoodId: neighbourhoods.length ? neighbourhoods[0].id : 1,
-			communeId: communes.length ? communes[0].id : 0,
+			neighbourhoodId: 0,
+			communeId: 0,
 		},
 	});
+
+	useEffect(() => {
+		const filtered = neighbourhoods.filter(
+			(neighbourhood) => neighbourhood.communeId === communeId,
+		);
+		setFilteredNeighbourhoods(filtered);
+		form.setValue("neighbourhoodId", 0);
+	}, [communeId, neighbourhoods, form.setValue]);
+
+	useEffect(() => {
+		const neighbourhood = neighbourhoods.find(
+			(neighbourhood) => neighbourhood.id === neighbourhoodId,
+		);
+		if (!neighbourhood) return;
+
+		form.setValue("communeId", neighbourhood.communeId);
+	}, [neighbourhoodId, neighbourhoods, form.setValue]);
 
 	const onSubmit = (values: z.infer<typeof propertyFormSchema>) => {
 		console.log({ values });
@@ -62,16 +88,24 @@ export function PropertyForm() {
 					fieldName="communeId"
 					itemName="comuna"
 					items={communes}
+					onChange={(id) => setCommuneId(id)}
 					description="Seleccione la comuna de la propiedad"
 				/>
 				<Combobox
 					form={form}
 					fieldName="neighbourhoodId"
 					itemName="barrio"
-					items={neighbourhoods}
+					items={
+						filteredNeighbourhoods.length
+							? filteredNeighbourhoods
+							: neighbourhoods
+					}
+					onChange={(id) => setNeighbourhoodId(id)}
 					description="Seleccione el barrio de la propiedad"
 				/>
-				<Button type="submit">Crear propiedad</Button>
+				<Button className="mt-3" type="submit">
+					Crear propiedad
+				</Button>
 			</form>
 		</Form>
 	);

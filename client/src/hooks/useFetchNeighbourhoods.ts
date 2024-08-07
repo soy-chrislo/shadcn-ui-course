@@ -1,14 +1,16 @@
 import { useCallback, useState } from "react";
 import { z } from "zod";
 
-interface Neighbourhood {
+export interface Neighbourhood {
 	id: number;
-	nombre: string;
+	name: string;
+	communeId: number;
 }
 
 const neighbourhoodSchema = z.object({
 	id: z.number(),
-	nombre: z.string(),
+	name: z.string(),
+	communeId: z.number(),
 });
 
 const neighbourhoodsSchema = z.array(neighbourhoodSchema);
