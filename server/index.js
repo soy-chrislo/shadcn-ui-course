@@ -14,9 +14,9 @@ const port = 3000;
 app.get("/barrios", (req, res) => {
 	const barriosConComunaId = barrios.map((barrio) => {
 		const relacion = relacionesBarriosComunas.find(
-			(rel) => rel.idBarrio === barrio.id,
+			(rel) => rel.neighbourhoodId === barrio.id,
 		);
-		const communeId = relacion ? relacion.idComuna : null;
+		const communeId = relacion ? relacion.communeId : null;
 		return { ...barrio, communeId };
 	});
 	return res.json(barriosConComunaId);
@@ -26,8 +26,8 @@ app.get("/barrios", (req, res) => {
 app.get("/comunas", (req, res) => {
 	const comunasConNeighbourhoodIds = comunas.map((comuna) => {
 		const neighbourhoodIds = relacionesBarriosComunas
-			.filter((rel) => rel.idComuna === comuna.id)
-			.map((rel) => rel.idBarrio);
+			.filter((rel) => rel.communeId === comuna.id)
+			.map((rel) => rel.neighbourhoodId);
 		return { ...comuna, neighbourhoodIds };
 	});
 	return res.json(comunasConNeighbourhoodIds);
@@ -40,8 +40,8 @@ app.get("/comunas/:id", (req, res) => {
 		return res.status(404).json({ message: "Comuna not found" });
 	}
 	const barriosDeComuna = relacionesBarriosComunas
-		.filter((rel) => rel.idComuna === Number(id))
-		.map((rel) => barrios.find((barrio) => barrio.id === rel.idBarrio));
+		.filter((rel) => rel.communeId === Number(id))
+		.map((rel) => barrios.find((barrio) => barrio.id === rel.neighbourhoodId));
 	return res.json({ ...comuna, barrios: barriosDeComuna });
 });
 
@@ -52,9 +52,9 @@ app.get("/barrios/:id", (req, res) => {
 		return res.status(404).json({ message: "Barrio not found" });
 	}
 	const relacion = relacionesBarriosComunas.find(
-		(rel) => rel.idBarrio === Number(id),
+		(rel) => rel.neighbourhoodId === Number(id),
 	);
-	const comunaId = relacion ? relacion.idComuna : null;
+	const comunaId = relacion ? relacion.communeId : null;
 	return res.json({ ...barrio, comunaId });
 });
 
