@@ -71,7 +71,7 @@ export function Combobox<T extends FormData>({
 								>
 									{field.value
 										? items.find((commune) => commune.id === field.value)?.name
-										: `Seleccione ${itemName}`}
+										: `Choose ${itemName}`}
 									<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 								</Button>
 							</FormControl>
@@ -83,7 +83,7 @@ export function Combobox<T extends FormData>({
 							<Command>
 								<CommandInput placeholder={`Buscar ${itemName}...`} />
 								<CommandList>
-									<CommandEmpty>No hay elementos</CommandEmpty>
+									<CommandEmpty>There are no elements.</CommandEmpty>
 									<CommandGroup>
 										{items.map((item) => (
 											<CommandItem

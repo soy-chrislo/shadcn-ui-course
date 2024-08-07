@@ -73,12 +73,15 @@ export function PropertyForm() {
 					name="name"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Nombre de propiedad</FormLabel>
+							<FormLabel>Property name</FormLabel>
 							<FormControl>
-								<Input placeholder="Nombre de propiedad" {...field} />
+								<Input
+									placeholder="Beautiful house in metropolitan area"
+									{...field}
+								/>
 							</FormControl>
 							<FormDescription>
-								Especifique el nombre de la propiedad a crear.
+								Specify the name of the property
 							</FormDescription>
 						</FormItem>
 					)}
@@ -86,25 +89,25 @@ export function PropertyForm() {
 				<Combobox
 					form={form}
 					fieldName="communeId"
-					itemName="comuna"
+					itemName="commune"
 					items={communes}
 					onChange={(id) => setCommuneId(id)}
-					description="Seleccione la comuna de la propiedad"
+					description="Select the commune of the property"
 				/>
 				<Combobox
 					form={form}
 					fieldName="neighbourhoodId"
-					itemName="barrio"
+					itemName="neighbourhood"
 					items={
 						filteredNeighbourhoods.length
 							? filteredNeighbourhoods
 							: neighbourhoods
 					}
 					onChange={(id) => setNeighbourhoodId(id)}
-					description="Seleccione el barrio de la propiedad"
+					description="Select the neighbourhood of the property"
 				/>
 				<Button className="mt-3" type="submit">
-					Crear propiedad
+					Create property
 				</Button>
 			</form>
 		</Form>
